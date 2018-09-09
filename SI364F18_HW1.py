@@ -1,6 +1,9 @@
 # HW 1
 # SI 364 F18
 # 1000 points
+from flask import Flask, render_template
+import requests
+import json
 
 #################################
 
@@ -10,7 +13,6 @@
 # [PROBLEM 1] - 150 points
 # Below is code for one of the simplest possible Flask applications. Edit the code so that once you run this application locally and go to the URL 'http://localhost:5000/class', you see a page that says "Welcome to SI 364!"
 
-from flask import Flask
 app = Flask(__name__)
 app.debug = True
 
@@ -25,10 +27,6 @@ def class_greeting():
     return '<h1>Welcome to SI 364!<h1>'
 
 
-if __name__ == '__main__':
-    app.run()
-
-
 # [PROBLEM 2] - 250 points
 # Edit the code chunk above again so that if you go to the URL 'http://localhost:5000/movie/<name-of-movie-here-one-word>'
 # you see a big dictionary of data on the page. For example, if you go to the URL 'http://localhost:5000/movie/ratatouille',
@@ -39,6 +37,13 @@ if __name__ == '__main__':
 #  "resultCount":0,
 #  "results": []
 # }
+
+@app.route('/movie/<title>')
+def get_stuff(title):
+    api_url_base = 'https://itunes.apple.com/search?term='
+    result = requests.get(api_url_base, params={'term': title})
+    data = json.loads(result.text)
+    return (str(data))
 
 
 # You should use the iTunes Search API to get that data.
@@ -52,6 +57,8 @@ if __name__ == '__main__':
 # Edit the above Flask application code so that if you run the application locally and got to the URL http://localhost:5000/question, you see a form that asks you to enter your favorite number.
 # Once you enter a number and submit it to the form, you should then see a web page that says "Double your favorite number is <number>". For example, if you enter 2 into the form, you should then see a page that says "Double your favorite number is 4". Careful about types in your Python code!
 # You can assume a user will always enter a number only.
+if __name__ == '__main__':
+    app.run()
 
 
 # [PROBLEM 4] - 350 points
