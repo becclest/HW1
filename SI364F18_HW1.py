@@ -1,10 +1,9 @@
 # HW 1
 # SI 364 F18
 # 1000 points
-from flask import Flask, render_template
+from flask import Flask, request
 import requests
 import json
-
 #################################
 
 # List below here, in a comment/comments, the people you worked with on this assignment AND any resources you used to find code (50 point deduction for not doing so). If none, write "None".
@@ -27,6 +26,50 @@ def class_greeting():
     return '<h1>Welcome to SI 364!<h1>'
 
 
+@app.route('/movie/<title>')
+def get_stuff(title):
+    api_url_base = 'https://itunes.apple.com/search?term='
+    result = requests.get(api_url_base, params={'term': title})
+    data = json.loads(result.text)
+    return (str(data))
+
+
+@app.route('/question')
+def hello_form():
+    if 'favnum' in request.args:
+        double = int(request.args['favnum']) * 2
+        return sendPage(double)
+    else:
+        return sendForm()
+
+
+def sendForm():
+    return '''
+    <html>
+      <body>
+          <form method='GET'>
+              <label for="fnum">Please Enter Your Favorite Number</label>
+              <input id="fnum" type="number" name="favnum" value="0" />
+              <input type="submit">
+          </form>
+      </body>
+    </html>
+    '''
+
+
+def sendPage(favnum):
+    return '''
+    <html>
+      <body>
+        <h1>Double your favorite number is:  {0}</h1>
+      </body>
+    </html>
+    '''.format(favnum)
+
+
+if __name__ == '__main__':
+    app.run()
+
 # [PROBLEM 2] - 250 points
 # Edit the code chunk above again so that if you go to the URL 'http://localhost:5000/movie/<name-of-movie-here-one-word>'
 # you see a big dictionary of data on the page. For example, if you go to the URL 'http://localhost:5000/movie/ratatouille',
@@ -37,14 +80,6 @@ def class_greeting():
 #  "resultCount":0,
 #  "results": []
 # }
-
-@app.route('/movie/<title>')
-def get_stuff(title):
-    api_url_base = 'https://itunes.apple.com/search?term='
-    result = requests.get(api_url_base, params={'term': title})
-    data = json.loads(result.text)
-    return (str(data))
-
 
 # You should use the iTunes Search API to get that data.
 # Docs for that API are here: https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/
@@ -57,8 +92,6 @@ def get_stuff(title):
 # Edit the above Flask application code so that if you run the application locally and got to the URL http://localhost:5000/question, you see a form that asks you to enter your favorite number.
 # Once you enter a number and submit it to the form, you should then see a web page that says "Double your favorite number is <number>". For example, if you enter 2 into the form, you should then see a page that says "Double your favorite number is 4". Careful about types in your Python code!
 # You can assume a user will always enter a number only.
-if __name__ == '__main__':
-    app.run()
 
 
 # [PROBLEM 4] - 350 points
