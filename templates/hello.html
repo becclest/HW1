@@ -1,0 +1,53 @@
+<html>
+
+<body>
+    <form action="" method="POST">
+        <h2> What is your name? </h2>
+        <p><label>First name: <input type="text" name="firstname"></label></p>
+        <p><label>Last name: <input type="text" name="lastname"></label></p>
+        <br><br>
+
+        <fieldset>
+            <legend>Apple Product Ownership</legend>
+            <p><label><input type="checkbox" name="Apple" value="iPod">I have an iPod</label></p>
+            <p><label><input type="checkbox" name="Apple" value="iPhone">I have an iPhone</label></p>
+            <p><label><input type="checkbox" name="Apple" value="MacBook">I have a MacBook</label></p>
+            <p><label><input type="checkbox" name="Apple" value="iPad">I have an iPad</label></p>
+            <p><label><input type="checkbox" name="Apple" value="Apple Watch">I have an Apple Watch</label></p>
+            <p><label><input type="checkbox" name="Apple" value="Apple TV">I have an Apple TV</label></p>
+        </fieldset>
+
+        <br><br>
+        <h2><label>Who is your favorite music artist?<br><input type="text" name="artist"></label></h2>
+        <br  />
+        <input type="submit" value="submit"/>
+
+      </form>
+
+    {% if artist == '' %}
+    <h2> Please enter your favorite artist!</h2>
+    {% else %}
+    <h2> Sweet choice {{firstname}} {{lastname}}!  Below are some of your favorite artist's top songs: </h2>
+    {% endif %}
+
+    <ul>
+        {% for songs in all_titles %}
+        <li><h2>{{ songs }}</h2>
+            {% else %}
+        <li><em>Unbelievable.  No entries here so far</em>
+            {% endfor %}
+    </ul>
+    <br  />
+    <h2>Here are the Apple devices can play your favorite artists' songs from iTunes on!! </h2>
+    <ul>
+        {% for i in selected_apple %}
+        <li><h2>{{ i }}</h2>
+            {% else %}
+        <li><em>Wow! Steve Jobs is rolling in his grave. RIP.  </em>
+            {% endfor %}
+    </ul>
+
+</body>
+
+
+</html>
