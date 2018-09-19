@@ -1,7 +1,7 @@
 # HW 1
 # SI 364 F18
 # 1000 points
-from flask import Flask, request
+from flask import Flask, render_template, request
 import requests
 import json
 #################################
@@ -14,6 +14,7 @@ import json
 
 app = Flask(__name__)
 app.debug = True
+api_url_base = 'https://itunes.apple.com/search?term='
 
 
 @app.route('/')
@@ -28,7 +29,6 @@ def class_greeting():
 
 @app.route('/movie/<title>')
 def get_stuff(title):
-    api_url_base = 'https://itunes.apple.com/search?term='
     result = requests.get(api_url_base, params={'term': title})
     data = json.loads(result.text)
     return (str(data))
@@ -38,12 +38,13 @@ def get_stuff(title):
 def hello_form():
     if 'favnum' in request.args:
         double = int(request.args['favnum']) * 2
-        return sendPage(double)
+        return PageStruc(double)
     else:
-        return sendForm()
+        return FormSubm()
 
 
-def sendForm():
+def FormSubm():
+
     return '''
     <html>
       <body>
@@ -57,7 +58,7 @@ def sendForm():
     '''
 
 
-def sendPage(favnum):
+def PageStruc(favnum):
     return '''
     <html>
       <body>
@@ -67,8 +68,21 @@ def sendPage(favnum):
     '''.format(favnum)
 
 
+@app.route('/problem4form', methods=['GET', 'POST'])
+def ProbForm():
+    firstname = request.form.get('firstname')
+    lastname = request.form.get('lastname')
+    artist = request.form.get('artist')
+    params = {'term': str(artist) + '&', 'limit': 25, 'entity': 'song'}
+    response = requests.get(api_url_base, params=params)
+    data = json.loads(response.text)
+    data = str(data)
+    return render_template('hello.html', firstname=firstname, lastname=lastname, artist=artist)
+
+
 if __name__ == '__main__':
     app.run()
+
 
 # [PROBLEM 2] - 250 points
 # Edit the code chunk above again so that if you go to the URL 'http://localhost:5000/movie/<name-of-movie-here-one-word>'
