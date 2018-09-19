@@ -7,13 +7,14 @@ import json
 #################################
 
 # List below here, in a comment/comments, the people you worked with on this assignment AND any resources you used to find code (50 point deduction for not doing so). If none, write "None".
-
+# FirstFlaskApp.py -- SI 364 Lecture, used it to help with making problem #4 and returning the song titles
 
 # [PROBLEM 1] - 150 points
 # Below is code for one of the simplest possible Flask applications. Edit the code so that once you run this application locally and go to the URL 'http://localhost:5000/class', you see a page that says "Welcome to SI 364!"
 
 app = Flask(__name__)
 app.debug = True
+
 api_url_base = 'https://itunes.apple.com/search?term='
 
 
@@ -29,7 +30,8 @@ def class_greeting():
 
 @app.route('/movie/<title>')
 def get_stuff(title):
-    result = requests.get(api_url_base, params={'term': title})
+    result = requests.get(api_url_base, params={
+                          'term': title, 'entity': 'movie'})
     data = json.loads(result.text)
     return (str(data))
 
@@ -73,11 +75,15 @@ def ProbForm():
     firstname = request.form.get('firstname')
     lastname = request.form.get('lastname')
     artist = request.form.get('artist')
-    params = {'term': str(artist) + '&', 'limit': 25, 'entity': 'song'}
+    params = {'term': str(artist), 'limit': 5, 'entity': 'song'}
     response = requests.get(api_url_base, params=params)
     data = json.loads(response.text)
-    data = str(data)
-    return render_template('hello.html', firstname=firstname, lastname=lastname, artist=artist)
+    song_titles = []
+    for item in data["results"]:
+        song_titles.append(item['trackName'])
+    selected_apple = request.form.getlist("Apple")
+
+    return render_template('hello.html', firstname=firstname, lastname=lastname, all_titles=song_titles, selected_apple=selected_apple)
 
 
 if __name__ == '__main__':
